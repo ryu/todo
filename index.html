@@ -227,9 +227,19 @@
       });
     });
 
+    // IME: block Enter immediately after composition ends
+    let justComposed = false;
+    todoInput.addEventListener('compositionend', () => {
+      justComposed = true;
+      setTimeout(() => { justComposed = false; }, 300);
+    });
+
     // Enter key to add
     todoInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') addTodo();
+      if (e.key === 'Enter') {
+        if (e.isComposing || e.keyCode === 229 || justComposed) return;
+        addTodo();
+      }
     });
 
     function addTodo() {
